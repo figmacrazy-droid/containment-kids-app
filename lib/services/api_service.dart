@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 
 class ApiService {
   static String get baseUploadUrl => baseUrl.replaceFirst('/api', '');
-  static const String baseUrl = 'http://containmentapp.alwaysdata.net/api';
+  static const String baseUrl = 'https://containmentapp.alwaysdata.net/api';
 
   static Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -85,27 +86,40 @@ class ApiService {
   }
 
   // ========== رفع ملف فيديو ==========
-  static Future<String> uploadVideoFile(String filePath) async {
+  static Future<String> uploadVideoFile(String filePath, {void Function(int, int)? onProgress}) async {
     final token = await _getToken();
     if (token == null) throw Exception('لا يوجد توكن');
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('$baseUrl/upload.php?token=$token'),
-    );
-    request.files.add(await http.MultipartFile.fromPath('video', filePath));
+    var dio = Dio();
+    var formData = FormData.fromMap({
+      'video': await MultipartFile.fromFile(filePath),
+    });
 
-    var response = await request.send().timeout(const Duration(seconds: 3000));
-    var responseData = await http.Response.fromStream(response);
+    try {
+      var response = await dio.post(
+        '$baseUrl/upload.php?token=$token',
+        data: formData,
+        onSendProgress: onProgress,
+        options: Options(
+          receiveTimeout: const Duration(minutes: 60),
+          sendTimeout: const Duration(minutes: 60),
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(responseData.body);
-      if (jsonResponse['success'] == true) {
-        return jsonResponse['file_path'];
+      if (response.statusCode == 200) {
+        var jsonResponse = response.data;
+        if (jsonResponse is String) {
+          jsonResponse = json.decode(jsonResponse);
+        }
+        if (jsonResponse['success'] == true) {
+          return jsonResponse['file_path'];
+        }
+        throw Exception(jsonResponse['message'] ?? 'فشل غير معروف');
       }
-      throw Exception(jsonResponse['message'] ?? 'فشل غير معروف');
+      throw Exception('فشل رفع الفيديو');
+    } catch (e) {
+      throw Exception('خطأ في الرفع: $e');
     }
-    throw Exception('فشل رفع الفيديو');
   }
 
   // ========== رفع صورة (اختياري إذا أردت فصله) ==========

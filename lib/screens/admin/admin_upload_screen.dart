@@ -115,7 +115,17 @@ class _AdminUploadScreenState extends State<AdminUploadScreen> {
         tempController.dispose();
       } catch (_) {}
 
-      String videoFilePath = await ApiService.uploadVideoFile(_selectedVideo!.path);
+      // استخدام onProgress لتحديث شريط التقدم
+      String videoFilePath = await ApiService.uploadVideoFile(
+        _selectedVideo!.path,
+        onProgress: (sent, total) {
+          if (total > 0) {
+            setState(() {
+              _uploadProgress = sent / total;
+            });
+          }
+        },
+      );
 
       String? thumbnailUrl;
       if (_selectedThumbnail == null) {
