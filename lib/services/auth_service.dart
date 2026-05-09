@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   // ⚠️ استبدلي 192.168.1.100 بعنوان IP الصحيح لجهاز الكمبيوتر الخاص بك
-  static const String baseUrl = 'http://korek37920.byethost7.com/api';
+  static const String baseUrl = 'http://containmentapp.alwaysdata.net/api';
 
   // ========== تسجيل الدخول ==========
   static Future<Map<String, dynamic>> login(String username, String password) async {

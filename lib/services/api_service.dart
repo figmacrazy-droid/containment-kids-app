@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   static String get baseUploadUrl => baseUrl.replaceFirst('/api', '');
-  static const String baseUrl = 'http://korek37920.byethost7.com/api';
+  static const String baseUrl = 'http://containmentapp.alwaysdata.net/api';
 
   static Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
