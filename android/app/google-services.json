@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "984339147389",
+    "project_id": "containment-app-new",
+    "storage_bucket": "containment-app-new.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984339147389:android:9aa98ac8b7187503071f14",
+        "android_client_info": {
+          "package_name": "com.example.containment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHQ7mRxUTBKeNyOya4JQDXZCvV_ZocLnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
